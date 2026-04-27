@@ -2,8 +2,8 @@ import pytest
 import time
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.service import Service as ChromeService
-from webdriver_manager.chrome import ChromeDriverManager
+
+# Библиотеки для явных ожиданий
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
@@ -12,7 +12,11 @@ def driver():
     options = webdriver.ChromeOptions()
     options.add_argument('--headless')
     options.add_argument('--window-size=1920,1080')
-    driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options)
+    options.add_argument('--no-sandbox') # Обязательно для работы в GitHub Actions (Linux)
+    options.add_argument('--disable-dev-shm-usage') # Спасает от падений из-за нехватки памяти в Linux
+    
+    driver = webdriver.Chrome(options=options)
+    
     driver.implicitly_wait(5)
     yield driver
     driver.quit()
